@@ -33,6 +33,12 @@ cover:
 	
 binaries: binary-darwin binary-linux
 
+generate_grpc:
+	@echo Generating grpc assets...
+	@protoc -I grpc/ grpc/git.proto --go_out=plugins=grpc:grpc/gen
+	@echo Done
+
+
 binary-darwin:
 	@-rm -rf build/dist/darwin
 	@-mkdir -p build/dist/darwin
