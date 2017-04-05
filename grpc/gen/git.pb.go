@@ -9,6 +9,8 @@ It is generated from these files:
 	git.proto
 
 It has these top-level messages:
+	Command
+	Response
 */
 package gen
 
@@ -32,6 +34,59 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type Command struct {
+	Command string `protobuf:"bytes,1,opt,name=command" json:"command,omitempty"`
+}
+
+func (m *Command) Reset()                    { *m = Command{} }
+func (m *Command) String() string            { return proto.CompactTextString(m) }
+func (*Command) ProtoMessage()               {}
+func (*Command) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+func (m *Command) GetCommand() string {
+	if m != nil {
+		return m.Command
+	}
+	return ""
+}
+
+type Response struct {
+	Message   string `protobuf:"bytes,1,opt,name=message" json:"message,omitempty"`
+	Completed bool   `protobuf:"varint,2,opt,name=completed" json:"completed,omitempty"`
+	Status    int64  `protobuf:"varint,3,opt,name=status" json:"status,omitempty"`
+}
+
+func (m *Response) Reset()                    { *m = Response{} }
+func (m *Response) String() string            { return proto.CompactTextString(m) }
+func (*Response) ProtoMessage()               {}
+func (*Response) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
+func (m *Response) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *Response) GetCompleted() bool {
+	if m != nil {
+		return m.Completed
+	}
+	return false
+}
+
+func (m *Response) GetStatus() int64 {
+	if m != nil {
+		return m.Status
+	}
+	return 0
+}
+
+func init() {
+	proto.RegisterType((*Command)(nil), "gen.Command")
+	proto.RegisterType((*Response)(nil), "gen.Response")
+}
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
@@ -43,6 +98,7 @@ const _ = grpc.SupportPackageIsVersion4
 // Client API for GitService service
 
 type GitServiceClient interface {
+	Execute(ctx context.Context, in *Command, opts ...grpc.CallOption) (GitService_ExecuteClient, error)
 }
 
 type gitServiceClient struct {
@@ -53,29 +109,97 @@ func NewGitServiceClient(cc *grpc.ClientConn) GitServiceClient {
 	return &gitServiceClient{cc}
 }
 
+func (c *gitServiceClient) Execute(ctx context.Context, in *Command, opts ...grpc.CallOption) (GitService_ExecuteClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_GitService_serviceDesc.Streams[0], c.cc, "/gen.GitService/Execute", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &gitServiceExecuteClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type GitService_ExecuteClient interface {
+	Recv() (*Response, error)
+	grpc.ClientStream
+}
+
+type gitServiceExecuteClient struct {
+	grpc.ClientStream
+}
+
+func (x *gitServiceExecuteClient) Recv() (*Response, error) {
+	m := new(Response)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // Server API for GitService service
 
 type GitServiceServer interface {
+	Execute(*Command, GitService_ExecuteServer) error
 }
 
 func RegisterGitServiceServer(s *grpc.Server, srv GitServiceServer) {
 	s.RegisterService(&_GitService_serviceDesc, srv)
 }
 
+func _GitService_Execute_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Command)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(GitServiceServer).Execute(m, &gitServiceExecuteServer{stream})
+}
+
+type GitService_ExecuteServer interface {
+	Send(*Response) error
+	grpc.ServerStream
+}
+
+type gitServiceExecuteServer struct {
+	grpc.ServerStream
+}
+
+func (x *gitServiceExecuteServer) Send(m *Response) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _GitService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "gen.GitService",
 	HandlerType: (*GitServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "git.proto",
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Execute",
+			Handler:       _GitService_Execute_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "git.proto",
 }
 
 func init() { proto.RegisterFile("git.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 59 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xe2, 0xe2, 0x4c, 0xcf, 0x2c, 0xd1,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4e, 0x4f, 0xcd, 0x33, 0xe2, 0xe1, 0xe2, 0x72, 0xcf,
-	0x2c, 0x09, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0x4d, 0x62, 0x03, 0xcb, 0x18, 0x03, 0x02, 0x00,
-	0x00, 0xff, 0xff, 0xf2, 0xc5, 0xbb, 0x36, 0x26, 0x00, 0x00, 0x00,
+	// 179 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x44, 0xcf, 0x3f, 0x0b, 0xc2, 0x30,
+	0x10, 0x05, 0x70, 0x63, 0xa1, 0x7f, 0x0e, 0x5d, 0x32, 0x48, 0x10, 0x87, 0x52, 0x97, 0xe2, 0x50,
+	0x44, 0x17, 0x77, 0x11, 0xf7, 0xb8, 0xb9, 0xd5, 0xf4, 0x08, 0x05, 0x93, 0x94, 0xe6, 0x2a, 0x7e,
+	0x7c, 0xb1, 0x36, 0xb8, 0xdd, 0xef, 0x78, 0xc3, 0x7b, 0x90, 0xe9, 0x96, 0xaa, 0xae, 0x77, 0xe4,
+	0x78, 0xa4, 0xd1, 0x16, 0x5b, 0x48, 0xce, 0xce, 0x98, 0xda, 0x36, 0x5c, 0x40, 0xa2, 0x7e, 0xa7,
+	0x60, 0x39, 0x2b, 0x33, 0x19, 0x58, 0xdc, 0x21, 0x95, 0xe8, 0x3b, 0x67, 0x3d, 0x7e, 0x53, 0x06,
+	0xbd, 0xaf, 0x35, 0x86, 0xd4, 0x44, 0xbe, 0x81, 0x4c, 0x39, 0xd3, 0x3d, 0x91, 0xb0, 0x11, 0xf3,
+	0x9c, 0x95, 0xa9, 0xfc, 0x3f, 0xf8, 0x0a, 0x62, 0x4f, 0x35, 0x0d, 0x5e, 0x44, 0x39, 0x2b, 0x23,
+	0x39, 0xe9, 0x70, 0x02, 0xb8, 0xb6, 0x74, 0xc3, 0xfe, 0xd5, 0x2a, 0xe4, 0x3b, 0x48, 0x2e, 0x6f,
+	0x54, 0x03, 0x21, 0x5f, 0x54, 0x1a, 0x6d, 0x35, 0x95, 0x5b, 0x2f, 0x47, 0x85, 0x16, 0xc5, 0x6c,
+	0xcf, 0x1e, 0xf1, 0x38, 0xe3, 0xf8, 0x09, 0x00, 0x00, 0xff, 0xff, 0x2e, 0x85, 0x55, 0xb7, 0xd3,
+	0x00, 0x00, 0x00,
 }

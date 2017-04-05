@@ -3,7 +3,17 @@ syntax = "proto3";
 package gen;
 
 service GitService { 
-    
-    
+    rpc Execute(Command) returns (stream Response) {}
 }
 
+
+message Command {
+    string command = 1;
+}
+
+
+message Response {
+    string message = 1;  
+    bool completed = 2;
+    int64 status = 3;
+}
