@@ -1,52 +1,79 @@
-// Copyright © 2017 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"net"
 
+	"github.com/inconshreveable/log15"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/grpclog"
+)
+
+const (
+	portKey     = "port"
+	tlsKey      = "tls"
+	certFileKey = "cert-file"
+	keyFileKey  = "key-file"
 )
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Starts the git remote server",
+	Long: `Starts the git remote server
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example:.
+gitr serve --port=2183`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("serve called")
+		tls := viper.GetBool(tlsKey)
+		certFile := viper.GetString(certFileKey)
+		keyFile := viper.GetString(keyFileKey)
+
+		var opts []grpc.ServerOption
+		if tls {
+			creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
+			if err != nil {
+				grpclog.Fatalf("Failed to generate credentials %v", err)
+			}
+			opts = []grpc.ServerOption{grpc.Creds(creds)}
+		}
+		grpcServer := grpc.NewServer(opts...)
+
+		_, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		//gitService := gitremot
+
+		port := viper.GetInt(portKey)
+		lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+		if err != nil {
+			log15.Crit("FAiled to create a grpc server", "err", err)
+		}
+
+		err = grpcServer.Serve(lis)
+		if err != nil {
+			log15.Crit("Failed to start grpc server", "err", err)
+
+		}
+
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(serveCmd)
 
-	// Here you will define your flags and configuration settings.
+	serveCmd.Flags().IntP(portKey, "p", 2183, "Port for the rpc service")
+	serveCmd.Flags().BoolP(tlsKey, "t", false, "Connection uses TLS if true, else plain TCP")
+	serveCmd.Flags().StringP(certFileKey, "c", "server.pem", "The TLS cert file")
+	serveCmd.Flags().StringP(keyFileKey, "k", "server.key", "The TLS key file")
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serveCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// serveCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag(portKey, serveCmd.Flags().Lookup(portKey))
+	viper.BindPFlag(tlsKey, serveCmd.Flags().Lookup(tlsKey))
+	viper.BindPFlag(certFileKey, serveCmd.Flags().Lookup(certFileKey))
+	viper.BindPFlag(keyFileKey, serveCmd.Flags().Lookup(keyFileKey))
 
 }
