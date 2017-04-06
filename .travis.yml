@@ -1,19 +1,15 @@
 language: go
 go:
-  - 1.8
+- 1.8
 before_install:
-  - sudo add-apt-repository ppa:masterminds/glide -y
-  - sudo apt-get update -q
-  - sudo apt-get install glide -y
+- sudo add-apt-repository ppa:masterminds/glide -y
+- sudo apt-get update -q
+- sudo apt-get install glide -y
 deploy:
   provider: releases
   api_key:
-    secure: NXLGPPmTO8r4TQJTpyPcPaFoL2YwwEhksoBNjqhAAehOezCMkqhYwOaKEVnyVEzwnxZDpf8GBCBqe9LeaLUrpgusHtUsQfjcpLMSYo4gyXriKKDsb1i2RzKfKn5kbe5Yq0hlkL7WY0zmYYNOTyqElpxN/IBvQrxLw8o3zrta4yuM+HlEEFff6/jfcf372ZwvYutKux8nZJvZC/9DbAsnJqeFp8UrJMajW4WjKfJcebObHP1Hz+RS4ORRzLWOXudX1nFnXjLZs0NJQwsf7Kin/ltCX1iQv4k7x9l55DkVM8aCPl/ndNvf/iqtfHsv9llhndx53Zau77VWBw1lChL+g8nXg7o5d7PjZeYFgrjizdQDqKrOeqMiVEynTBZLxdbvggw5HGZe8slkw+YOvdKZSoUVQQWieh8KpCYq5IMQIPv6I47ENkNq2kAHP8PUb2d3VuOdkFuwGT3ZU86EvF4MMInsrtN4zvtC2v+q+u7jNlLMEEP2wycqrnkqLCBCZTRBt83tpjELrB5dbmaabCqnGkFBQ6IIL+q7c7B6xWBlaAGGr2YX/84Uon7FHpLxQiv5JY4nSXpo8NFvDPfDA6t3sVy9Doe17Ki6hYUg2LCdAKEIplHGK4dU3mB1Hi3sDvZWRsw3WUG28SFcFQ54NvvLpHXsu9OlcCLraveFp440rzQ=
+    secure: XKO+j2q8gDepOP3D/7/W4yZCiKukyhT5ayjE6cbWm8BpOTTEzKFa0C5U2UylUTszMugivFYHT9wdJyjY/5QHuj4gGTJl4iyLJNwhMMUawJy0iedx1X+QB4tuesy9ripZ90BivD+awXTZ2Ka6EUj4crV5/M9nGYTyVtSuE9Aid+o9k0KV49E/EHLiNrWHNGJnrVaIYyPq5xFA2v2Paa4zjter2woz4kn/BjLBo5wiDfWH5475vCRhpKyTkYY8nwQw2P2e9OUFjRs19edvXaIoZSaos2Sa9dr7vLE2KaTJ99N7WHYTBN4Md6fXDZo3OYsbwgLpQMjyXXqhoAlZmkigQep1nKRNmhvT+2F7wY1IKBEIVZmKdEH4wSByo4R+sd+S6R8aj0O3PwSjA9qumxexFr37HrsU77pOS7rd2dKYZyO/AJDJciNLMxt3434pDHZNoKdodxT5u89XSevKpxqt8Xx/DCk2w7OvQDnd+JMqSRMDnc4pUaIPNcCazMb3ChFhbLfAMEHsIoX5lhkKlbVn1ieb8sWxsDt8UUbOrO4gxU7SfADJpl7IoMfmo7bTevUfd56wqGzH/fcqa2Dxkau8pLpQ3VE+dw1Hpig7OSX6KkVuOh48+xHUvRMwZDmEICrgZxBu1vL4G32AXwVMWLHfp6ncqbB5DkPLp4RBM9RxGf8=
   file:
     - build/dist/gitr.darwin-amd64.tar.gz
     - build/dist/gitr.linux-amd64.tar.gz
   skip_cleanup: true
-
-  on:
-    tags: true
-    go: '1.8'
