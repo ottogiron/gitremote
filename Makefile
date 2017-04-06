@@ -1,6 +1,6 @@
 # Meta info
 NAME := gitr
-VERSION := 0.1.0
+VERSION := 0.1.1
 MAINTAINER := "Otto Giron <ottog2486@gmail.com"
 SOURCE_URL := https://github.com/ottogiron/gitremote.git
 DATE := $(shell date -u +%Y%m%d.%H%M%S)
