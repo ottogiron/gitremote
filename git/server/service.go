@@ -16,7 +16,7 @@ const (
 
 //GitService operations in the git server
 type GitService interface {
-	Execute(command string, onOutput func(string)) (int, error)
+	Execute(command string, onOutput func(string)) error
 }
 
 var _ GitService = (*gitService)(nil)
@@ -24,16 +24,16 @@ var _ GitService = (*gitService)(nil)
 type gitService struct {
 }
 
-func (g *gitService) Execute(command string, onOutput func(string)) (int, error) {
+func (g *gitService) Execute(command string, onOutput func(string)) error {
 
 	commandTokens := strings.Fields(command)
 
-	if len(command) < 0 {
-		return failStatus, errors.New("Invalid empty command")
+	if len(command) == 0 {
+		return errors.New("Invalid empty command")
 	}
 
 	if commandTokens[0] != "git" {
-		return failStatus, errors.Errorf("Invalid non git command: %s", command)
+		return errors.Errorf("Invalid non git command: %s", command)
 	}
 
 	cmdName := "git"
@@ -51,20 +51,20 @@ func (g *gitService) Execute(command string, onOutput func(string)) (int, error)
 	}()
 
 	if err != nil {
-		return failStatus, errors.Wrapf(err, "Errorr creating StdoutPipe for command %s", command)
+		return errors.Wrapf(err, "Errorr creating StdoutPipe for command %s", command)
 	}
 
 	err = cmd.Start()
 
 	if err != nil {
-		return failStatus, errors.Wrapf(err, "Errors starting command %s", command)
+		return errors.Wrapf(err, "Errors starting command %s", command)
 	}
 
 	err = cmd.Wait()
 
 	if err != nil {
-		return failStatus, errors.Wrapf(err, "Error waiting for command %s", command)
+		return errors.Wrapf(err, "Error waiting for command %s", command)
 	}
 
-	return successStatus, nil
+	return nil
 }
