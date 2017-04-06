@@ -16,15 +16,39 @@ TODO
 ### Run the server in the remote server
 
 ```bash
-gitr serve --port=8082
+gitr serve --port=2183
 ```
 
-### Execute a git command
+### Examples
 
-#### Clone
 
 ```bash
-gitr clone <git_url> [path] --remote_host_url=<my_host_url>
+gitr exec --command='git status' --working-dir="/path/to/git/repo/in/remote/server" --host-address="localhost:2183"
+gitr exec --command='git add .' --working-dir="/path/to/git/repo/in/remote/server" --host-address="localhost:2183"
+gitr exec --command='git commit -m "Add latest changes remotely"' --working-dir="/path/to/git/repo/in/remote/server" --host-address="localhost:2183"
+gitr exec --command='git push' --working-dir="/path/to/git/repo/in/remote/server" --host-address="localhost:2183"
 ```
 
+
+### Exec Usage
+
+```bash
+Executes a git command in a  remote server:
+
+Example:.
+gitr exec --command="git status" --working-dir=/home/otto/myproject --host-address=myhost:2183
+
+The above executes translates to "git status" command running in the /home/otto/myproject directory
+
+Usage:
+  gitremote exec [flags]
+
+Flags:
+  -c, --command string        git command to be executed example: git status
+  -a, --host-address string   git remote server address (default "localhost:2183")
+  -w, --working-dir string    Working directory of the git command to run (default ".")
+
+Global Flags:
+      --config string   config file (default is $HOME/.gitremote.yaml)
+```
 
