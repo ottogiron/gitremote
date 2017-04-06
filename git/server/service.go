@@ -1,12 +1,13 @@
 package server
 
 import (
-	"bufio"
 	"strings"
 
 	"os/exec"
 
 	"sync"
+
+	"io"
 
 	"github.com/pkg/errors"
 )
@@ -18,7 +19,7 @@ const (
 
 //GitService operations in the git server
 type GitService interface {
-	Execute(dir string, command string, onOutput func(string)) error
+	Execute(dir string, command string, output io.Writer) error
 }
 
 var _ GitService = (*gitService)(nil)
@@ -32,12 +33,12 @@ func NewGitService() GitService {
 	return &gitService{}
 }
 
-func (g *gitService) Execute(dir string, command string, onOutput func(string)) error {
+func (g *gitService) Execute(dir string, command string, output io.Writer) error {
 
 	commandTokens := strings.Fields(command)
 
 	if len(command) == 0 {
-		return errors.New("Invalid empty command")
+		return errors.Errorf("Invalid empty command %s", command)
 	}
 
 	if commandTokens[0] != "git" {
@@ -48,38 +49,14 @@ func (g *gitService) Execute(dir string, command string, onOutput func(string)) 
 	cmdArgs := commandTokens[1:]
 
 	cmd := exec.Command(cmdName, cmdArgs...)
+
 	cmd.Dir = dir
-	cmdReader, err := cmd.StdoutPipe()
+	cmd.Stdout = output
 
-	scanner := bufio.NewScanner(cmdReader)
-	go func() {
-
-		for {
-			g.mu.Lock()
-			token := scanner.Scan()
-			g.mu.Unlock()
-			if !token {
-				return
-			}
-			onOutput(scanner.Text())
-		}
-	}()
+	err := cmd.Run()
 
 	if err != nil {
-		return errors.Wrapf(err, "Errorr creating StdoutPipe for command %s", command)
+		return errors.Wrapf(err, "Errors runing command %s", command)
 	}
-
-	err = cmd.Start()
-
-	if err != nil {
-		return errors.Wrapf(err, "Errors starting command %s", command)
-	}
-	g.mu.Lock()
-	err = cmd.Wait()
-	g.mu.Unlock()
-	if err != nil {
-		return errors.Wrapf(err, "Error waiting for command %s", command)
-	}
-
 	return nil
 }

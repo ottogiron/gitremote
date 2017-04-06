@@ -1,18 +1,17 @@
 package server
 
 import "testing"
+import "io/ioutil"
+import "io"
 
-func onOutput(msg string) {
-	//just ignore the git output
-	//fmt.Println(msg)
-}
+var onOutput = ioutil.Discard
 
 func Test_gitService_Execute(t *testing.T) {
 
 	type args struct {
 		dir      string
 		command  string
-		onOutput func(string)
+		onOutput io.Writer
 	}
 	tests := []struct {
 		name string

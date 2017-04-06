@@ -42,6 +42,7 @@ gitr serve --port=2183`,
 			creds, err := credentials.NewServerTLSFromFile(certFile, keyFile)
 			if err != nil {
 				grpclog.Fatalf("Failed to generate credentials %v", err)
+				return
 			}
 			opts = []grpc.ServerOption{grpc.Creds(creds)}
 		}
@@ -61,12 +62,14 @@ gitr serve --port=2183`,
 
 		if err != nil {
 			log15.Crit("FAiled to create a grpc server", "err", err)
+			return
 		}
 
 		log15.Info("Listening...	", "port", port)
 		err = grpcServer.Serve(lis)
 		if err != nil {
 			log15.Crit("Failed to start grpc server", "err", err)
+			return
 
 		}
 
