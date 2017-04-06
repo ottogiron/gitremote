@@ -13,13 +13,13 @@ Find binaries for linux and MacOS in the [releases page](https://github.com/otto
 ## Getting Started
 
 
-### Run the server in the remote server
+### Run the server in the remote host
 
 ```bash
 gitr serve --port=2183
 ```
 
-### Examples
+### Run git comands in a client machine
 
 
 ```bash
