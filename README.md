@@ -8,7 +8,7 @@ Executes  git operations in a remote server. It requires git installed in the re
 
 ## Installation
 
-TODO
+Find binaries for linux and MacOS in the [releases page](https://github.com/ottogiron/gitremote/releases)
 
 ## Getting Started
 
