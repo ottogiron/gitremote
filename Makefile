@@ -2,14 +2,14 @@
 NAME := gitr
 VERSION := 0.1.0
 MAINTAINER := "Otto Giron <ottog2486@gmail.com"
-SOURCE_URL := https://github.com/gitr-project/gitr.git
+SOURCE_URL := https://github.com/ottogiron/gitremote.git
 DATE := $(shell date -u +%Y%m%d.%H%M%S)
 COMMIT_ID := $(shell git rev-parse --short HEAD)
 GIT_REPO := $(shell git config --get remote.origin.url)
 # Go tools flags
-LD_FLAGS := -X github.com/gitr-project/gitr/cmd.buildVersion=$(VERSION)
-LD_FLAGS += -X github.com/gitr-project/gitr/cmd.buildCommit=$(COMMIT_ID)
-LD_FLAGS += -X github.com/gitr-project/gitr/cmd.buildDate=$(DATE)
+LD_FLAGS := -X github.com/ottogiron/gitremote/cmd.buildVersion=$(VERSION)
+LD_FLAGS += -X github.com/ottogiron/gitremote/cmd.buildCommit=$(COMMIT_ID)
+LD_FLAGS += -X github.com/ottogiron/gitremote/cmd.buildDate=$(DATE)
 EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
 SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
 
