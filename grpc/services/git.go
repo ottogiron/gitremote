@@ -22,7 +22,7 @@ func NewGitServiceServer(service server.GitService) *GitServiceServer {
 //Execute executes a git command in the remote server
 func (g *GitServiceServer) Execute(command *gen.Command, stream gen.GitService_ExecuteServer) error {
 
-	err := g.service.Execute(command.Command, func(msgOutput string) {
+	err := g.service.Execute(command.Dir, command.Command, func(msgOutput string) {
 		log15.Info(msgOutput)
 		stream.Send(&gen.Output{
 			Message: msgOutput,

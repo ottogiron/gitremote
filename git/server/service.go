@@ -18,7 +18,7 @@ const (
 
 //GitService operations in the git server
 type GitService interface {
-	Execute(command string, onOutput func(string)) error
+	Execute(dir string, command string, onOutput func(string)) error
 }
 
 var _ GitService = (*gitService)(nil)
@@ -32,7 +32,7 @@ func NewGitService() GitService {
 	return &gitService{}
 }
 
-func (g *gitService) Execute(command string, onOutput func(string)) error {
+func (g *gitService) Execute(dir string, command string, onOutput func(string)) error {
 
 	commandTokens := strings.Fields(command)
 
@@ -48,7 +48,7 @@ func (g *gitService) Execute(command string, onOutput func(string)) error {
 	cmdArgs := commandTokens[1:]
 
 	cmd := exec.Command(cmdName, cmdArgs...)
-
+	cmd.Dir = dir
 	cmdReader, err := cmd.StdoutPipe()
 
 	scanner := bufio.NewScanner(cmdReader)

@@ -9,6 +9,7 @@ service GitService {
 
 message Command {
     string command = 1;
+    string dir = 2;
 }
 
 
