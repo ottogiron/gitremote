@@ -1,13 +1,10 @@
 package server
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 func onOutput(msg string) {
 	//just ignore the git output
-	fmt.Println(msg)
+	//fmt.Println(msg)
 }
 
 func Test_gitService_Execute(t *testing.T) {

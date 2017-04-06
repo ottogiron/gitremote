@@ -6,6 +6,10 @@ import (
 	"net"
 
 	"github.com/inconshreveable/log15"
+	"github.com/ottogiron/gitremote/git/server"
+	"github.com/ottogiron/gitremote/grpc/services"
+
+	"github.com/ottogiron/gitremote/grpc/gen"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -46,14 +50,20 @@ gitr serve --port=2183`,
 		_, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		//gitService := gitremot
+		gitService := server.NewGitService()
+
+		gitServerService := services.NewGitServiceServer(gitService)
+
+		gen.RegisterGitServiceServer(grpcServer, gitServerService)
 
 		port := viper.GetInt(portKey)
 		lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+
 		if err != nil {
 			log15.Crit("FAiled to create a grpc server", "err", err)
 		}
 
+		log15.Info("Listening...	", "port", port)
 		err = grpcServer.Serve(lis)
 		if err != nil {
 			log15.Crit("Failed to start grpc server", "err", err)
