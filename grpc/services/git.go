@@ -45,7 +45,7 @@ func (g *GitServiceServer) Execute(command *gen.Command, stream gen.GitService_E
 
 	if err != nil {
 		log15.Error("Failed to execute git command", "err", err)
-		return errors.Wrapf(err, "Failed to execute git command in the server", command.Command)
+		return errors.Wrapf(err, "Failed to execute git command in the server %s", command.Command)
 	}
 
 	return nil

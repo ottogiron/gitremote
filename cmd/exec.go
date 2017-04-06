@@ -8,6 +8,7 @@ import (
 
 	"github.com/inconshreveable/log15"
 	"github.com/ottogiron/gitremote/grpc/gen"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -58,7 +59,8 @@ The above executes translates to "git status" command running in the /home/otto/
 			}
 
 			if err != nil {
-				//gprclog.Fatalf()
+				log15.Error("Failed to execute command", "err", errors.Cause(err))
+				return
 			}
 
 			fmt.Print(out.Message)

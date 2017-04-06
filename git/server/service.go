@@ -35,6 +35,8 @@ func NewGitService() GitService {
 
 func (g *gitService) Execute(dir string, command string, output io.Writer) error {
 
+	command = strings.Replace(command, "\\", "", -1)
+
 	commandTokens := strings.Fields(command)
 
 	if len(command) == 0 {
@@ -45,18 +47,15 @@ func (g *gitService) Execute(dir string, command string, output io.Writer) error
 		return errors.Errorf("Invalid non git command: %s", command)
 	}
 
-	cmdName := "git"
-	cmdArgs := commandTokens[1:]
-
-	cmd := exec.Command(cmdName, cmdArgs...)
+	cmd := exec.Command("sh", "-c", command)
 
 	cmd.Dir = dir
 	cmd.Stdout = output
-
+	cmd.Stderr = output
 	err := cmd.Run()
 
 	if err != nil {
-		return errors.Wrapf(err, "Errors runing command %s", command)
+		return errors.Wrapf(err, "Failed to run command %s", command)
 	}
 	return nil
 }
