@@ -19,7 +19,7 @@ Find binaries for linux and MacOS in the [releases page](https://github.com/otto
 
 ```yaml
 ---
-
+port: 2183
 allowed-directories:
     - /path/in/server/to/allowed/git/repo
 
@@ -30,7 +30,7 @@ allowed-commands:
 ```
 
 ```bash
-gitr serve --port=2183
+gitr serve
 ```
 
 ### Run git comands in a client machine
