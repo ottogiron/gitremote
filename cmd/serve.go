@@ -22,7 +22,7 @@ const (
 	tlsKey                = "tls"
 	certFileKey           = "cert-file"
 	keyFileKey            = "key-file"
-	allowedDirectoriesKey = "allowed-directires"
+	allowedDirectoriesKey = "allowed-directories"
 	allowedCommandsKey    = "allowed-commands"
 )
 
@@ -73,6 +73,8 @@ gitr serve --port=2183`,
 		}
 
 		log15.Info("Listening...	", "port", port)
+		log15.Info("Allowed directories", "list", allowedDirectories)
+		log15.Info("Allowed commands", "list", allowedCommands)
 		err = grpcServer.Serve(lis)
 		if err != nil {
 			log15.Crit("Failed to start grpc server", "err", err)
