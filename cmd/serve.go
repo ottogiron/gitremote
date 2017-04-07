@@ -18,10 +18,12 @@ import (
 )
 
 const (
-	portKey     = "port"
-	tlsKey      = "tls"
-	certFileKey = "cert-file"
-	keyFileKey  = "key-file"
+	portKey               = "port"
+	tlsKey                = "tls"
+	certFileKey           = "cert-file"
+	keyFileKey            = "key-file"
+	allowedDirectoriesKey = "allowed-directires"
+	allowedCommandsKey    = "allowed-commands"
 )
 
 // serveCmd represents the serve command
@@ -36,6 +38,8 @@ gitr serve --port=2183`,
 		tls := viper.GetBool(tlsKey)
 		certFile := viper.GetString(certFileKey)
 		keyFile := viper.GetString(keyFileKey)
+		allowedDirectories := viper.GetStringSlice(allowedDirectoriesKey)
+		allowedCommands := viper.GetStringSlice(allowedCommandsKey)
 
 		var opts []grpc.ServerOption
 		if tls {
@@ -51,7 +55,10 @@ gitr serve --port=2183`,
 		_, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		gitService := server.NewGitService()
+		gitService := server.NewGitService(
+			server.SetAllowedCommands(allowedCommands),
+			server.SetAllowedDirectories(allowedDirectories),
+		)
 
 		gitServerService := services.NewGitServiceServer(gitService)
 
@@ -83,10 +90,14 @@ func init() {
 	serveCmd.Flags().BoolP(tlsKey, "t", false, "Connection uses TLS if true, else plain TCP")
 	serveCmd.Flags().StringP(certFileKey, "c", "server.pem", "The TLS cert file")
 	serveCmd.Flags().StringP(keyFileKey, "k", "server.key", "The TLS key file")
+	serveCmd.Flags().StringSliceP(allowedDirectoriesKey, "d", []string{}, "The list of allowed git executable directories")
+	serveCmd.Flags().StringSliceP(allowedCommandsKey, "a", []string{}, "The list of allowed git commands")
 
 	viper.BindPFlag(portKey, serveCmd.Flags().Lookup(portKey))
 	viper.BindPFlag(tlsKey, serveCmd.Flags().Lookup(tlsKey))
 	viper.BindPFlag(certFileKey, serveCmd.Flags().Lookup(certFileKey))
 	viper.BindPFlag(keyFileKey, serveCmd.Flags().Lookup(keyFileKey))
+	viper.BindPFlag(allowedDirectoriesKey, serveCmd.Flags().Lookup(allowedDirectoriesKey))
+	viper.BindPFlag(allowedCommandsKey, serveCmd.Flags().Lookup(allowedCommandsKey))
 
 }
