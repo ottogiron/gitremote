@@ -77,11 +77,12 @@ func (g *gitService) isAllowedDirectory(directory string) bool {
 }
 
 func (g *gitService) isAllowedCommand(command string) bool {
-	commandFields := strings.Fields(command)
 
 	if len(command) == 0 {
 		return false
 	}
+
+	commandFields := strings.Fields(command)
 
 	if commandFields[0] != "git" {
 		return false
