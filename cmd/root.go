@@ -14,7 +14,7 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "gitremote",
 	Short: "Executes git commands remotely",
-	Long: `Executes git commands remotely`,
+	Long:  `Executes git commands remotely`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
