@@ -15,8 +15,22 @@ Find binaries for linux and MacOS in the [releases page](https://github.com/otto
 
 ### Run the server in the remote host
 
+***Configuration (default location $HOME/.gitremote.yaml):***
+
+```yaml
+---
+port: 2183
+allowed-directories:
+    - /path/in/server/to/allowed/git/repo
+
+allowed-commands:
+    - git status
+    - git log
+    - git pull
+```
+
 ```bash
-gitr serve --port=2183
+gitr serve
 ```
 
 ### Run git comands in a client machine
@@ -29,10 +43,38 @@ gitr exec --command='git commit -m "Add latest changes remotely"' --working-dir=
 gitr exec --command='git push' --working-dir="/path/to/git/repo/in/remote/server" --host-address="localhost:2183"
 ```
 
+### Commands Usage
 
-### Exec Usage
+## Serve
 
 ```bash
+git serve [flags]
+
+Starts the git remote server
+
+Example:.
+gitr serve --port=2183
+
+Usage:
+  gitremote serve [flags]
+
+Flags:
+  -a, --allowed-commands stringSlice      The list of allowed git commands
+  -d, --allowed-directories stringSlice   The list of allowed git executable directories
+  -c, --cert-file string                  The TLS cert file (default "server.pem")
+  -k, --key-file string                   The TLS key file (default "server.key")
+  -p, --port int                          Port for the rpc service (default 2183)
+  -t, --tls                               Connection uses TLS if true, else plain TCP
+
+Global Flags:
+      --config string   config file (default is $HOME/.gitremote.yaml)
+```
+
+## Exec
+
+```bash
+gitr exec [flags]
+
 Executes a git command in a  remote server:
 
 Example:.

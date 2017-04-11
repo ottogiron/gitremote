@@ -23,9 +23,14 @@ func Test_gitService_Execute(t *testing.T) {
 		{"Empty command", args{".", "", onOutput}, true},
 		{"Empty non git command", args{".", "got status", onOutput}, true},
 		{"Command failing to execute", args{".", "git something", onOutput}, true},
+		{"Directory not allowed", args{"/", "git something", onOutput}, true},
+		{"Command not allowed", args{".", "git push", onOutput}, true},
 	}
 	for _, tt := range tests {
-		g := &gitService{}
+		g := NewGitService(
+			SetAllowedCommands([]string{"git status"}),
+			SetAllowedDirectories([]string{"."}),
+		)
 		t.Run(tt.name, func(t *testing.T) {
 			err := g.Execute(tt.args.dir, tt.args.command, tt.args.onOutput)
 			if (err != nil) != tt.wantErr {

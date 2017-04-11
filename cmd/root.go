@@ -14,7 +14,7 @@ var cfgFile string
 var RootCmd = &cobra.Command{
 	Use:   "gitremote",
 	Short: "Executes git commands remotely",
-	Long: `Executes git commands remotely`,
+	Long:  `Executes git commands remotely`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -53,7 +53,7 @@ func initConfig() {
 	viper.AutomaticEnv()              // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	if err := viper.ReadInConfig(); err != nil {
+		fmt.Println("Failed to read initialize server configuration")
 	}
 }
